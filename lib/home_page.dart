@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_editor_pro/image_editor_pro.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'image_editor/image_editor_pro.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -78,7 +79,9 @@ class _HomePageState extends State<HomePage> {
           pathSave: null,
           defaultImage: image,
         );
-      })).then((geteditimage) {}).catchError((er) {
-        print(er);
-      });
+      })).then((geteditimage) {}).catchError(
+        (er) {
+          print(er);
+        },
+      );
 }
