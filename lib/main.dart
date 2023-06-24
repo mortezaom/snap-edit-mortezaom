@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snap_edit/theme.dart';
 
 import 'home_page.dart';
 
@@ -12,9 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Picker Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: darkTheme,
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
   }

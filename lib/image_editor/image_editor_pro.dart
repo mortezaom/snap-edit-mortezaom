@@ -64,7 +64,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
-    setState(() => pickerColor = color);
+    pickerColor = color;
+    changeState();
     var points = _controller.points;
     _controller =
         SignatureController(penStrokeWidth: 5, penColor: color, points: points);
@@ -92,7 +93,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
       }
     });
     Timer.periodic(const Duration(milliseconds: 10), (tim) {
-      setState(() {});
+      changeState();
       timeprediction = tim;
     });
   }
@@ -195,15 +196,13 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                           //   )
                           : Container(),
                       GestureDetector(
-                        child: Signat(),
+                        child: const Signat(),
                         onPanUpdate: (DragUpdateDetails details) {
-                          setState(() {
-                            var object =
-                                context.findRenderObject() as RenderBox;
-                            var localPosition =
-                                object.globalToLocal(details.globalPosition);
-                            _points = List.from(_points)..add(localPosition);
-                          });
+                          var object = context.findRenderObject() as RenderBox;
+                          var localPosition =
+                              object.globalToLocal(details.globalPosition);
+                          _points = List.from(_points)..add(localPosition);
+                          changeState();
                         },
                         onPanEnd: (DragEndDetails details) {
                           _points.add(null);
@@ -225,11 +224,10 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                     });
                                   },
                                   onpanupdate: (details) {
-                                    setState(() {
-                                      offsets[f.key] = Offset(
-                                          offsets[f.key].dx + details.delta.dx,
-                                          offsets[f.key].dy + details.delta.dy);
-                                    });
+                                    offsets[f.key] = Offset(
+                                        offsets[f.key].dx + details.delta.dx,
+                                        offsets[f.key].dy + details.delta.dy);
+                                    changeState();
                                   },
                                   mapJson: f.value,
                                 )
@@ -254,13 +252,12 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             });
                                       },
                                       onpanupdate: (details) {
-                                        setState(() {
-                                          offsets[f.key] = Offset(
-                                              offsets[f.key].dx +
-                                                  details.delta.dx,
-                                              offsets[f.key].dy +
-                                                  details.delta.dy);
-                                        });
+                                        offsets[f.key] = Offset(
+                                            offsets[f.key].dx +
+                                                details.delta.dx,
+                                            offsets[f.key].dy +
+                                                details.delta.dy);
+                                        changeState();
                                       },
                                       mapJson: f.value,
                                     )
@@ -282,16 +279,21 @@ class _ImageEditorProState extends State<ImageEditorPro> {
             onPressed: () {
               showCupertinoDialog(
                 context: context,
+                useRootNavigator: true,
+                barrierDismissible: true,
                 builder: (context) {
                   return AlertDialog(
                     title: const Text('Select Height Width'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            height = int.parse(heightcontroler.text);
-                            width = int.parse(widthcontroler.text);
-                          });
+                          if (heightcontroler.text.isEmpty ||
+                              widthcontroler.text.isEmpty) {
+                            return;
+                          }
+                          height = int.parse(heightcontroler.text);
+                          width = int.parse(widthcontroler.text);
+                          changeState();
                           heightcontroler.clear();
                           widthcontroler.clear();
                           Navigator.pop(context);
@@ -377,8 +379,9 @@ class _ImageEditorProState extends State<ImageEditorPro> {
         backgroundColor: widget.appBarColor ?? Colors.black87,
       ),
       bottomNavigationBar: openbottomsheet
-          ? Container()
+          ? const SizedBox()
           : Container(
+              height: 70,
               decoration: BoxDecoration(
                 color: widget.bottomBarColor,
                 boxShadow: [
@@ -415,7 +418,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                               TextButton(
                                 child: const Text('Got it'),
                                 onPressed: () {
-                                  setState(() => currentColor = pickerColor);
+                                  currentColor = pickerColor;
+                                  changeState();
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -433,7 +437,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                       var value = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TextEditorImage()));
+                              builder: (context) => const TextEditorImage()));
                       if (value['name'] == null) {
                         print('true');
                       } else {
@@ -452,9 +456,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                     colors: widget.bottomBarColor,
                     icons: Icons.flip,
                     ontap: () {
-                      setState(() {
-                        flipValue = flipValue == 0 ? math.pi : 0;
-                      });
+                      flipValue = flipValue == 0 ? math.pi : 0;
+                      changeState();
                     },
                     title: 'Flip',
                   ),
@@ -462,9 +465,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                     colors: widget.bottomBarColor,
                     icons: Icons.rotate_left,
                     ontap: () {
-                      setState(() {
-                        rotateValue--;
-                      });
+                      rotateValue--;
+                      changeState();
                     },
                     title: 'Rotate left',
                   ),
@@ -472,9 +474,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                     colors: widget.bottomBarColor,
                     icons: Icons.rotate_right,
                     ontap: () {
-                      setState(() {
-                        rotateValue++;
-                      });
+                      rotateValue++;
+                      changeState();
                     },
                     title: 'Rotate right',
                   ),
@@ -521,19 +522,17 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                           pickMode: PickMode.Color,
                                           colorListener: (int value) {
                                             setS(() {
-                                              setState(() {
-                                                colorValue = Color(value);
-                                              });
+                                              colorValue = Color(value);
+                                              changeState();
                                             });
                                           },
                                         ),
                                       ),
                                       TextButton(
                                         onPressed: () {
-                                          setState(() {
-                                            setS(() {
-                                              colorValue = Colors.transparent;
-                                            });
+                                          setS(() {
+                                            colorValue = Colors.transparent;
+                                            changeState();
                                           });
                                         },
                                         child: const Text(
@@ -558,9 +557,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                           max: 10.0,
                                           onChanged: (v) {
                                             setS(() {
-                                              setState(() {
-                                                blurValue = v;
-                                              });
+                                              blurValue = v;
+                                              changeState();
                                             });
                                           },
                                         ),
@@ -568,9 +566,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                       TextButton(
                                         onPressed: () {
                                           setS(() {
-                                            setState(() {
-                                              blurValue = 0.0;
-                                            });
+                                            blurValue = 0.0;
+                                            changeState();
                                           });
                                         },
                                         child: const Text(
@@ -596,18 +593,16 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             max: 1.0,
                                             onChanged: (v) {
                                               setS(() {
-                                                setState(() {
-                                                  opacityValue = v;
-                                                });
+                                                opacityValue = v;
+                                                changeState();
                                               });
                                             }),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           setS(() {
-                                            setState(() {
-                                              opacityValue = 0.0;
-                                            });
+                                            opacityValue = 0.0;
+                                            changeState();
                                           });
                                         },
                                         child: const Text(
@@ -674,18 +669,16 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             max: 10.0,
                                             onChanged: (v) {
                                               setS(() {
-                                                setState(() {
-                                                  hueValue = v;
-                                                });
+                                                hueValue = v;
+                                                changeState();
                                               });
                                             },
                                           ),
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            setState(() {
-                                              hueValue = 0.0;
-                                            });
+                                            hueValue = 0.0;
+                                            changeState();
                                           },
                                           child: const Text(
                                             'Reset',
@@ -710,18 +703,16 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             max: 10.0,
                                             onChanged: (v) {
                                               setS(() {
-                                                setState(() {
-                                                  saturationValue = v;
-                                                });
+                                                saturationValue = v;
+                                                changeState();
                                               });
                                             },
                                           ),
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            setState(() {
-                                              saturationValue = 0.0;
-                                            });
+                                            saturationValue = 0.0;
+                                            changeState();
                                           },
                                           child: const Text(
                                             'Reset',
@@ -746,17 +737,15 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                               max: 1.0,
                                               onChanged: (v) {
                                                 setS(() {
-                                                  setState(() {
-                                                    brightnessValue = v;
-                                                  });
+                                                  brightnessValue = v;
+                                                  changeState();
                                                 });
                                               }),
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            setState(() {
-                                              brightnessValue = 0.0;
-                                            });
+                                            brightnessValue = 0.0;
+                                            changeState();
                                           },
                                           child: const Text(
                                             'Reset',
@@ -781,7 +770,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                       var getemojis = showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
-                            return Emojies();
+                            return const Emojies();
                           });
                       getemojis.then((value) {
                         if (value['name'] != null) {
@@ -803,6 +792,10 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   }
 
   final picker = ImagePicker();
+
+  changeState() {
+    setState(() {});
+  }
 
   void bottomsheets() {
     openbottomsheet = true;
@@ -853,12 +846,11 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                         var decodedImage = await decodeImageFromList(
                             File(image!.path).readAsBytesSync());
 
-                        setState(() {
-                          height = decodedImage.height;
-                          width = decodedImage.width;
-                          _image = File(image.path);
-                        });
-                        setState(() => _controller.clear());
+                        height = decodedImage.height;
+                        width = decodedImage.width;
+                        _image = File(image.path);
+                        _controller.clear();
+                        changeState();
                         Navigator.pop(context);
                       },
                       child: Column(
@@ -887,12 +879,11 @@ class _ImageEditorProState extends State<ImageEditorPro> {
 
   Future<void> loadImage(File imageFile) async {
     final decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
-    setState(() {
-      height = decodedImage.height;
-      width = decodedImage.width;
-      _image = imageFile;
-      _controller.clear();
-    });
+    height = decodedImage.height;
+    width = decodedImage.width;
+    _image = imageFile;
+    _controller.clear();
+    changeState();
   }
 
   void _closeModal(void value) {

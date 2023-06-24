@@ -113,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  ficonsax:
+    dependency: "direct main"
+    description:
+      name: ficonsax
+      sha256: f7c69817fb4a9a8545ed66656990d4634adad61b2b8d601fb91ba99d389fad47
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   file:
     dependency: transitive
     description:
@@ -232,6 +240,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.17"
+  image_gallery_saver:
+    dependency: "direct main"
+    description:
+      name: image_gallery_saver
+      sha256: "467de169167b5c4e1ddde65395e4653c336a82f760b6700ea295085b7f2dd248"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   image_picker:
     dependency: "direct main"
     description:
